@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import './App.css';
-import BookForm from './Components/BookForm';
+import BookCreateForm from './Components/BookCreateForm';
+import BookUpdateForm from './Components/BookUpdateForm';
 import BooksList from './Components/BooksList';
 
 function App() {
+    const [openUpdateForm, setOpenUpdateForm] = useState(false);
     const [books, setBooks] = useState([]);
     const [bookToUpdate, setBookToUpdate] = useState(null);
 
@@ -32,11 +34,13 @@ function App() {
     return (
         <div className="App">
             <h1>Library Management System</h1>
-            <BookForm 
-                addBook={addBook} 
-                bookToUpdate={bookToUpdate} 
-                updateBook={updateBook} 
-            />
+            {openUpdateForm ? 
+                <BookUpdateForm 
+                    addBook={addBook}
+                /> : 
+                <BookCreateForm 
+                    addBook={addBook}
+                />}
             <BooksList books={books} editBook={editBook} deleteBook={deleteBook} />
         </div>
     );

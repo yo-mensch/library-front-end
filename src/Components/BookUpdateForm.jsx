@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 
-function BookForm(props) {
-    const [bookName, setBookName] = useState(props.bookToUpdate ? props.bookToUpdate.name : '');
-    const [authorName, setAuthorName] = useState(props.bookToUpdate ? props.bookToUpdate.author : '');
+function BookUpdateForm(props) {
+    const [bookName, setBookName] = useState(props.bookName);
+    const [authorName, setAuthorName] = useState(props.authorName);
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -10,7 +10,7 @@ function BookForm(props) {
             if (props.bookToUpdate) {
                 props.updateBook({ ...props.bookToUpdate, name: bookName, author: authorName });
             } else {
-                props.addBook({ id: Date.now(), name: bookName, author: authorName });
+                props.addBook({ id: Date.now(), title: bookName, author: authorName });
                 setBookName('');
                 setAuthorName('');
             }
@@ -32,4 +32,4 @@ function BookForm(props) {
     );
 }
 
-export default BookForm;
+export default BookUpdateForm;
