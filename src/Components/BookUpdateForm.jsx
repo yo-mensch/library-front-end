@@ -1,19 +1,13 @@
 import React, { useState } from 'react';
 
 function BookUpdateForm(props) {
-    const [bookName, setBookName] = useState(props.bookName);
-    const [authorName, setAuthorName] = useState(props.authorName);
+    const [bookName, setBookName] = useState(props.book ? props.book.title : ''); // Use a default value
+    const [authorName, setAuthorName] = useState(props.book ? props.book.author : '');
 
     const handleSubmit = (e) => {
         e.preventDefault();
         if (bookName && authorName) {
-            if (props.bookToUpdate) {
-                props.updateBook({ ...props.bookToUpdate, name: bookName, author: authorName });
-            } else {
-                props.addBook({ id: Date.now(), title: bookName, author: authorName });
-                setBookName('');
-                setAuthorName('');
-            }
+            props.updateBook({ ...props.book, title: bookName, author: authorName });
         }
     };
 
@@ -27,7 +21,8 @@ function BookUpdateForm(props) {
                 Author:
                 <input type="text" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
             </label>
-            <button type="submit">Add Book</button>
+            <button type="submit">Update Book</button>
+            {/* <button onClick={props.closeEditForm()}>Close</button> */}
         </form>
     );
 }

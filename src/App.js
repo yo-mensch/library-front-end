@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import BookCreateForm from './Components/BookCreateForm';
 import BookUpdateForm from './Components/BookUpdateForm';
@@ -26,17 +26,30 @@ function App() {
         setBooks(newBooks);
     };
 
+    // const closeEditForm = () => {
+    //     setOpenUpdateForm(false);
+    //     setBookToUpdate(null);
+    // }
+
     const editBook = (book) => {
-        setBookToUpdate(book);
-        console.log(bookToUpdate);
+        const bookToEdit = book;
+        setBookToUpdate(bookToEdit);
+        setOpenUpdateForm(true);
+        console.log(book);
     };
+
+    useEffect(() => {
+        // This effect will trigger whenever bookToUpdate changes
+        console.log(bookToUpdate); // Log the updated bookToUpdate
+    }, [bookToUpdate]);
 
     return (
         <div className="App">
             <h1>Library Management System</h1>
             {openUpdateForm ? 
                 <BookUpdateForm 
-                    addBook={addBook}
+                    book={bookToUpdate}
+                    updateBook={updateBook}
                 /> : 
                 <BookCreateForm 
                     addBook={addBook}
