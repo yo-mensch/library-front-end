@@ -26,11 +26,6 @@ function App() {
         setBooks(newBooks);
     };
 
-    // const closeEditForm = () => {
-    //     setOpenUpdateForm(false);
-    //     setBookToUpdate(null);
-    // }
-
     const editBook = (book) => {
         const bookToEdit = book;
         setBookToUpdate(bookToEdit);
@@ -38,9 +33,13 @@ function App() {
         console.log(book);
     };
 
+    const closeEditForm = () =>{
+        setOpenUpdateForm(false);
+        setBookToUpdate(null);
+    }
+
     useEffect(() => {
-        // This effect will trigger whenever bookToUpdate changes
-        console.log(bookToUpdate); // Log the updated bookToUpdate
+        console.log(bookToUpdate);
     }, [bookToUpdate]);
 
     return (
@@ -50,6 +49,7 @@ function App() {
                 <BookUpdateForm 
                     book={bookToUpdate}
                     updateBook={updateBook}
+                    closeEditForm={closeEditForm}
                 /> : 
                 <BookCreateForm 
                     addBook={addBook}

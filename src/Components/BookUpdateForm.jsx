@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 function BookUpdateForm(props) {
-    const [bookName, setBookName] = useState(props.book ? props.book.title : ''); // Use a default value
+    const [bookName, setBookName] = useState(props.book ? props.book.title : '');
     const [authorName, setAuthorName] = useState(props.book ? props.book.author : '');
 
     const handleSubmit = (e) => {
@@ -22,7 +22,7 @@ function BookUpdateForm(props) {
                 <input type="text" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
             </label>
             <button type="submit">Update Book</button>
-            {/* <button onClick={props.closeEditForm()}>Close</button> */}
+            <button onClick={props.closeEditForm}>Close</button>
         </form>
     );
 }
