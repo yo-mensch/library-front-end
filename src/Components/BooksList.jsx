@@ -15,9 +15,9 @@ function BooksList({ books, editBook, deleteBook }) {
       {books.map((book) => (
         <Grid item xs={8} sm={6} md={4} key={book.id}>
           <Card className="list-item">
-            <h4>
+            <Card.Title>
               {book.title} by {book.author}
-            </h4>
+            </Card.Title>
             <ButtonGroup>
               <Button variant="secondary" onClick={() => editBook(book)}>
                 Edit
