@@ -19,6 +19,7 @@ function App() {
     );
     setBooks(newBooks);
     setBookToUpdate(null); // Reset the book to update
+    setOpenUpdateForm(false);
   };
 
   const deleteBook = (id) => {

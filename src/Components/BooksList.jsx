@@ -1,12 +1,13 @@
 import React from "react";
-import { Button, ButtonGroup, ListGroup } from "react-bootstrap";
+import { Button, ButtonGroup, ListGroup, Card } from "react-bootstrap";
+import "./style/BooksList.css"
 
 function BooksList({ books, editBook, deleteBook }) {
   return (
-    <ListGroup>
+    <ListGroup className="container">
       {books.map((book) => (
-        <ListGroup.Item key={book.id}>
-          {book.title} by {book.author}
+        <Card className="list-item" key={book.id}>
+          <h4>{book.title} by {book.author}</h4>
           <ButtonGroup>
             <Button variant='secondary' onClick={() => editBook(book)}>Edit</Button>
             <Button variant='danger' onClick={() => deleteBook(book.id)}>Delete</Button>
@@ -17,7 +18,7 @@ function BooksList({ books, editBook, deleteBook }) {
           >
             Lend
           </Button>
-        </ListGroup.Item>
+        </Card>
       ))}
     </ListGroup>
   );

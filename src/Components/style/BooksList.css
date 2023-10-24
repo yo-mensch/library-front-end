@@ -1,0 +1,10 @@
+.container {
+    display: flex !important;
+    justify-content: center;
+    margin-top: 2%;
+}
+.list-item {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+}

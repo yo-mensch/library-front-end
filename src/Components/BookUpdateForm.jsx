@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Container } from "react-bootstrap";
+import './style/BookUpdateForm.css'
 
 function BookUpdateForm(props) {
   const [bookName, setBookName] = useState(props.book ? props.book.title : "");
@@ -15,7 +16,9 @@ function BookUpdateForm(props) {
   };
 
   return (
+    <Container className="form-container">
     <Form onSubmit={handleSubmit}>
+    <h3>Edit Book</h3>
       <Form.Group>
         <Form.Label>Book Name:</Form.Label>
         <Form.Control
@@ -37,6 +40,7 @@ function BookUpdateForm(props) {
         Close
       </Button>
     </Form>
+    </Container>
   );
 }
 
