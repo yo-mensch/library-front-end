@@ -33,7 +33,9 @@ function BookCreateForm(props) {
           onChange={(e) => setAuthorName(e.target.value)}
         />
       </Form.Group>
-      <Button type="submit">Add Book</Button>
+      <Button variant="primary" type="submit">
+        Add Book
+      </Button>
     </Form>
   );
 }
