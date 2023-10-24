@@ -23,6 +23,7 @@ function BookCreateForm(props) {
           <Form.Label>Book Name:</Form.Label>
           <Form.Control
             type="text"
+            required
             value={bookName}
             onChange={(e) => setBookName(e.target.value)}
           />
@@ -31,6 +32,7 @@ function BookCreateForm(props) {
           <Form.Label>Author:</Form.Label>
           <Form.Control
             type="text"
+            required
             value={authorName}
             onChange={(e) => setAuthorName(e.target.value)}
           />
