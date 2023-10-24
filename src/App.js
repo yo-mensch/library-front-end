@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
-import BookForm from './Components/BookForm';
+import BookCreateForm from './Components/BookCreateForm';
+import BookUpdateForm from './Components/BookUpdateForm';
 import BooksList from './Components/BooksList';
 
 function App() {
+    const [openUpdateForm, setOpenUpdateForm] = useState(false);
     const [books, setBooks] = useState([]);
     const [bookToUpdate, setBookToUpdate] = useState(null);
 
@@ -25,18 +27,33 @@ function App() {
     };
 
     const editBook = (book) => {
-        setBookToUpdate(book);
-        console.log(bookToUpdate);
+        const bookToEdit = book;
+        setBookToUpdate(bookToEdit);
+        setOpenUpdateForm(true);
+        console.log(book);
     };
+
+    const closeEditForm = () =>{
+        setOpenUpdateForm(false);
+        setBookToUpdate(null);
+    }
+
+    useEffect(() => {
+        console.log(bookToUpdate);
+    }, [bookToUpdate]);
 
     return (
         <div className="App">
             <h1>Library Management System</h1>
-            <BookForm 
-                addBook={addBook} 
-                bookToUpdate={bookToUpdate} 
-                updateBook={updateBook} 
-            />
+            {openUpdateForm ? 
+                <BookUpdateForm 
+                    book={bookToUpdate}
+                    updateBook={updateBook}
+                    closeEditForm={closeEditForm}
+                /> : 
+                <BookCreateForm 
+                    addBook={addBook}
+                />}
             <BooksList books={books} editBook={editBook} deleteBook={deleteBook} />
         </div>
     );
