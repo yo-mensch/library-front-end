@@ -5,6 +5,24 @@ import Typography from "@mui/material/Typography";
 import "./style/BooksList.css";
 
 function BooksList({ books, editBook, deleteBook }) {
+  const handleDelete = (_id) => {
+    fetch(`http://localhost:3004/book/${_id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        // Remove the deleted book from the local state
+        deleteBook();
+      })
+      .catch((error) => {
+        console.error("There was a problem with the fetch operation:", error);
+      });
+  }
   return (
     <Grid
       container
@@ -26,7 +44,7 @@ function BooksList({ books, editBook, deleteBook }) {
               <Button variant="secondary" onClick={() => editBook(book)}>
                 Edit
               </Button>
-              <Button variant="danger" onClick={() => deleteBook(book.id)}>
+              <Button variant="danger" onClick={() => handleDelete(book._id)}>
                 Delete
               </Button>
             </ButtonGroup>

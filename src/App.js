@@ -40,18 +40,14 @@ function App() {
       book.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const updateBook = (updatedBook) => {
-    const newBooks = books.map((book) =>
-      book.id === updatedBook.id ? updatedBook : book
-    );
-    setBooks(newBooks);
+  const updateBook = () => {
+    fetchData();
     setBookToUpdate(null); // Reset the book to update
     setOpenUpdateForm(false);
   };
 
-  const deleteBook = (id) => {
-    const newBooks = books.filter((book) => book.id !== id);
-    setBooks(newBooks);
+  const deleteBook = () => {
+    fetchData();
   };
 
   const editBook = (book) => {
@@ -85,7 +81,7 @@ function App() {
       {openUpdateForm ? (
         <BookUpdateForm
           book={bookToUpdate}
-          updateBook={updateBook}
+          fetchData={fetchData}
           closeEditForm={closeEditForm}
         />
       ) : (
