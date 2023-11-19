@@ -11,7 +11,7 @@ function BookUpdateForm(props) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (bookName && authorName) {
-      props.updateBook({ ...props.book, title: bookName, author: authorName });
+      props.updateBook({ ...props.book, name: bookName, author: authorName });
     }
   };
 

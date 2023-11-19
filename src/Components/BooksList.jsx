@@ -1,6 +1,7 @@
 import React from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { Grid } from "@mui/material";
+import Typography from "@mui/material/Typography";
 import "./style/BooksList.css";
 
 function BooksList({ books, editBook, deleteBook }) {
@@ -13,11 +14,14 @@ function BooksList({ books, editBook, deleteBook }) {
       alignItems="center"
     >
       {books.map((book) => (
-        <Grid item xs={8} sm={6} md={4} key={book.id}>
+        <Grid item xs={8} sm={6} md={4} key={book._id}>
           <Card className="list-item">
             <Card.Title>
-              {book.title} by {book.author}
+              {book.name} by {book.author}
             </Card.Title>
+            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
+            {book.status}
+          </Typography>
             <ButtonGroup>
               <Button variant="secondary" onClick={() => editBook(book)}>
                 Edit

@@ -11,6 +11,21 @@ function App() {
   const [bookToUpdate, setBookToUpdate] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
+  const fetchData = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/book/", {
+        method: "GET",
+      });
+      if (!response.ok) {
+        alert("response aint okey");
+      }
+      const responseData = await response.json();
+      setBooks(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const addBook = (book) => {
     setBooks([...books, book]);
   };
@@ -21,7 +36,7 @@ function App() {
 
   const filteredBooks = books.filter(
     (book) =>
-      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       book.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
@@ -52,8 +67,8 @@ function App() {
   };
 
   useEffect(() => {
-    console.log(bookToUpdate);
-  }, [bookToUpdate]);
+    fetchData();
+  }, []);
 
   return (
     <div className="App">
@@ -74,7 +89,7 @@ function App() {
           closeEditForm={closeEditForm}
         />
       ) : (
-        <BookCreateForm addBook={addBook} />
+        <BookCreateForm addBook={addBook} fetchData={fetchData} />
       )}
       <BooksList books={filteredBooks} editBook={editBook} deleteBook={deleteBook} />
     </div>
