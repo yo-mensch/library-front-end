@@ -1,30 +1,49 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { Form, Button, Container } from "react-bootstrap";
+import "./style/BookUpdateForm.css";
 
 function BookUpdateForm(props) {
-    const [bookName, setBookName] = useState(props.book ? props.book.title : '');
-    const [authorName, setAuthorName] = useState(props.book ? props.book.author : '');
+  const [bookName, setBookName] = useState(props.book ? props.book.title : "");
+  const [authorName, setAuthorName] = useState(
+    props.book ? props.book.author : ""
+  );
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        if (bookName && authorName) {
-            props.updateBook({ ...props.book, title: bookName, author: authorName });
-        }
-    };
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (bookName && authorName) {
+      props.updateBook({ ...props.book, title: bookName, author: authorName });
+    }
+  };
 
-    return (
-        <form onSubmit={handleSubmit}>
-            <label>
-                Book Name:
-                <input type="text" value={bookName} onChange={(e) => setBookName(e.target.value)} />
-            </label>
-            <label>
-                Author:
-                <input type="text" value={authorName} onChange={(e) => setAuthorName(e.target.value)} />
-            </label>
-            <button type="submit">Update Book</button>
-            <button onClick={props.closeEditForm}>Close</button>
-        </form>
-    );
+  return (
+    <Container className="form-container">
+      <Form onSubmit={handleSubmit}>
+        <h3>Edit Book</h3>
+        <Form.Group>
+          <Form.Label>Book Name:</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            value={bookName}
+            onChange={(e) => setBookName(e.target.value)}
+          />
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Author:</Form.Label>
+          <Form.Control
+            required
+            type="text"
+            value={authorName}
+            onChange={(e) => setAuthorName(e.target.value)}
+          />
+        </Form.Group>
+        <Button type="submit">Update Book</Button>
+        <Button variant="light" onClick={props.closeEditForm}>
+          Close
+        </Button>
+      </Form>
+    </Container>
+  );
 }
 
 export default BookUpdateForm;
