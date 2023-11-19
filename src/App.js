@@ -3,15 +3,27 @@ import "./App.css";
 import BookCreateForm from "./Components/BookCreateForm";
 import BookUpdateForm from "./Components/BookUpdateForm";
 import BooksList from "./Components/BooksList";
+import { Form, FormControl } from "react-bootstrap"; // Importing Bootstrap components
 
 function App() {
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
   const [books, setBooks] = useState([]);
   const [bookToUpdate, setBookToUpdate] = useState(null);
+  const [searchTerm, setSearchTerm] = useState(""); // State for search term
 
   const addBook = (book) => {
     setBooks([...books, book]);
   };
+
+  const handleSearchChange = (e) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const filteredBooks = books.filter(
+    (book) =>
+      book.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      book.author.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const updateBook = (updatedBook) => {
     const newBooks = books.map((book) =>
@@ -46,6 +58,15 @@ function App() {
   return (
     <div className="App">
       <h1>Library Management System</h1>
+      <Form inline>
+        <FormControl
+          type="text"
+          placeholder="Search by Title or Author"
+          className="mr-sm-2"
+          value={searchTerm}
+          onChange={handleSearchChange}
+        />
+      </Form>
       {openUpdateForm ? (
         <BookUpdateForm
           book={bookToUpdate}
@@ -55,7 +76,7 @@ function App() {
       ) : (
         <BookCreateForm addBook={addBook} />
       )}
-      <BooksList books={books} editBook={editBook} deleteBook={deleteBook} />
+      <BooksList books={filteredBooks} editBook={editBook} deleteBook={deleteBook} />
     </div>
   );
 }
