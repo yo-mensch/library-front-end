@@ -3,6 +3,7 @@ import "./App.css";
 import BookCreateForm from "./Components/BookCreateForm";
 import BookUpdateForm from "./Components/BookUpdateForm";
 import BooksList from "./Components/BooksList";
+import LoginForm from "./Components/LoginForm";
 import { Form, FormControl } from "react-bootstrap"; // Importing Bootstrap components
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
   const [books, setBooks] = useState([]);
   const [bookToUpdate, setBookToUpdate] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   const addBook = (book) => {
     setBooks([...books, book]);
@@ -58,25 +60,35 @@ function App() {
   return (
     <div className="App">
       <h1>Library Management System</h1>
-      <Form inline>
-        <FormControl
-          type="text"
-          placeholder="Search by Title or Author"
-          className="mr-sm-2"
-          value={searchTerm}
-          onChange={handleSearchChange}
-        />
-      </Form>
-      {openUpdateForm ? (
-        <BookUpdateForm
-          book={bookToUpdate}
-          updateBook={updateBook}
-          closeEditForm={closeEditForm}
-        />
+      {!isLoggedIn ? ( // Conditionally render the login form if not logged in
+        <LoginForm />
       ) : (
-        <BookCreateForm addBook={addBook} />
+        <>
+          <Form inline>
+            <FormControl
+              type="text"
+              placeholder="Search by Title or Author"
+              className="mr-sm-2"
+              value={searchTerm}
+              onChange={handleSearchChange}
+            />
+          </Form>
+          {openUpdateForm ? (
+            <BookUpdateForm
+              book={bookToUpdate}
+              updateBook={updateBook}
+              closeEditForm={closeEditForm}
+            />
+          ) : (
+            <BookCreateForm addBook={addBook} />
+          )}
+          <BooksList
+            books={filteredBooks}
+            editBook={editBook}
+            deleteBook={deleteBook}
+          />
+        </>
       )}
-      <BooksList books={filteredBooks} editBook={editBook} deleteBook={deleteBook} />
     </div>
   );
 }
