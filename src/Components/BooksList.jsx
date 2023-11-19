@@ -2,16 +2,26 @@ import React, { useState } from "react";
 import { Button, ButtonGroup, Card, Modal, Form } from "react-bootstrap";
 import { Grid } from "@mui/material";
 import "./style/BooksList.css";
+import LentBooksList from "./LentBooksList";
 
 function BooksList({ books, editBook, deleteBook }) {
-
-  const [showPopup, setShowPopup] = useState(false);
+  const [showLendPopup, setShowLendPopup] = useState(false);
+  const [showLentBooksPopup, setShowLentBooksPopup] = useState(false);
   const [lendTo, setLendTo] = useState("");
+  const [lentBooks, setLentBooks] = useState([]);
 
   const handleLendSubmit = () => {
-    // prideti logika???
-    console.log('Lending book to: ${lendTo}');
-    setShowPopup(false);
+    const updatedBooks = [...lentBooks, lendTo];
+    setLentBooks(updatedBooks);
+    setShowLendPopup(false); // Fix this line
+  };
+
+  const handleShowLentBooks = () => {
+    setShowLentBooksPopup(true);
+  };
+
+  const handleCloseLentBooks = () => {
+    setShowLentBooksPopup(false);
   };
 
   return (
@@ -38,16 +48,19 @@ function BooksList({ books, editBook, deleteBook }) {
             </ButtonGroup>
             <Button
               variant="outline-disabled"
-              //onClick={() => console.log("cia keisis knygos statusas")}
-              onClick={() => setShowPopup(true)}
+              onClick={() => {
+                setLendTo("");
+                setShowLendPopup(true);
+              }}
             >
               Lend
             </Button>
           </Card>
         </Grid>
       ))}
+
       {/* Pop-up window (form) */}
-      <Modal show={showPopup} onHide={() => setShowPopup(false)}>
+      <Modal show={showLendPopup} onHide={() => setShowLendPopup(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Lend Book</Modal.Title>
         </Modal.Header>
@@ -64,15 +77,21 @@ function BooksList({ books, editBook, deleteBook }) {
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowPopup(false)}>
+          <Button variant="secondary" onClick={() => setShowLendPopup(false)}>
             Close
           </Button>
-          {/* Add your form submission button here */}
           <Button variant="primary" onClick={handleLendSubmit}>
             Lend
           </Button>
         </Modal.Footer>
       </Modal>
+
+      {/* Show Lent Books Pop-up window */}
+      <LentBooksList
+        show={showLentBooksPopup}
+        onClose={handleCloseLentBooks}
+        lentBooks={lentBooks}
+      />
     </Grid>
   );
 }
