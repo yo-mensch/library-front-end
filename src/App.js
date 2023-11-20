@@ -11,7 +11,7 @@ function App() {
   const [books, setBooks] = useState([]);
   const [bookToUpdate, setBookToUpdate] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [isLoggedIn, setIsLoggedIn] = useState(true);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   const fetchData = async () => {
     try {
@@ -64,6 +64,10 @@ function App() {
     setBookToUpdate(null);
   };
 
+  const handleLogin = () => {
+    setIsLoggedIn(true); 
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -72,7 +76,7 @@ function App() {
     <div className="App">
       <h1>Library Management System</h1>
       {!isLoggedIn ? ( // Conditionally render the login form if not logged in
-        <LoginForm />
+        <LoginForm handleLogin={handleLogin} />
       ) : (
         <>
           <Form inline>

@@ -1,20 +1,31 @@
 import React, { useState } from 'react';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import { Form, Button, Container } from "react-bootstrap";
 import "./style/LoginForm.css";
 
-
-const LoginForm = () => {
+const LoginForm = ({ handleLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Perform login logic here using username and password
-    console.log('Username:', username);
-    console.log('Password:', password);
-    // You can handle login functionality, API calls, etc. here
-    // Remember, this is a basic example - handle actual login logic appropriately
+    try {
+      const response = await fetch("http://localhost:3004/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        console.log("Login successful");
+        handleLogin(); // Call the handleLogin function passed from App.js
+      } else {
+        console.error("Login failed");
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -48,3 +59,4 @@ const LoginForm = () => {
 };
 
 export default LoginForm;
+
