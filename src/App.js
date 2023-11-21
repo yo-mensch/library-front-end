@@ -5,6 +5,8 @@ import BookUpdateForm from "./Components/BookUpdateForm";
 import BooksList from "./Components/BooksList";
 import LoginForm from "./Components/LoginForm";
 import RegisterForm from "./Components/RegisterForm";
+import UserList from "./Components/UserList";
+import UserUpdateForm from "./Components/UserUpdateForm";
 import { Form, FormControl, Button } from "react-bootstrap"; // Importing Bootstrap components
 
 function App() {
@@ -15,6 +17,8 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [activeTab, setActiveTab] = useState('books');
+  const [users, setUsers] = useState([]);
+  const [userToUpdate, setUserToUpdate] = useState(null);
 
   const fetchData = async () => {
     try {
@@ -26,6 +30,22 @@ function App() {
       }
       const responseData = await response.json();
       setBooks(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const fetchDataForUsers = async () => {
+    try {
+      const response = await fetch('http://localhost:3004/user/', {
+        method: 'GET',
+      });
+      if (!response.ok) {
+        alert('response not okay');
+      }
+      const responseData = await response.json();
+      setUsers(responseData);
+      console.log(setUsers);
     } catch (error) {
       console.error(error);
     }
@@ -73,18 +93,39 @@ function App() {
 
   const handleRegister = () => {
     setShowRegisterForm(false);
+    fetchDataForUsers();
   };
 
   const handleRegisterClose = () => {
     setShowRegisterForm(false);
+    fetchDataForUsers();
   };
 
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
 
+  const updateUser = async () => {
+    fetchDataForUsers();
+  };
+
+  const deleteUser = async (userId) => {
+    fetchDataForUsers();
+  };
+
+  const editUser = (user) => {
+    setUserToUpdate(user);
+    // Open the user update form
+  };
+
+  const closeEditUserForm = () => {
+    setUserToUpdate(null);
+    // Close the user update form
+  };
+
   useEffect(() => {
     fetchData();
+    fetchDataForUsers();
   }, []);
 
   return (
@@ -148,9 +189,21 @@ function App() {
                   Add new user
                 </Button>
                 {showRegisterForm && (
-                  <RegisterForm handleRegister={handleRegister} handleRegisterClose={handleRegisterClose} />
+                  <RegisterForm handleRegister={handleRegister} handleRegisterClose={handleRegisterClose} fetchDataForUsers={fetchDataForUsers} />
                 )}
-                {/* Other User-related components */}
+                {userToUpdate && (
+                  <UserUpdateForm
+                    user={userToUpdate}
+                    fetchDataForUsers={fetchDataForUsers}
+                    updateUser={updateUser}
+                    closeEditUserForm={closeEditUserForm}
+                  />
+                )}
+                <UserList
+                  users={users} // Pass the users array to the UserList component
+                  editUser={editUser} // Pass the editUser function to the UserList component
+                  deleteUser={deleteUser} // Pass the deleteUser function to the UserList component
+                />
               </>
             )}
           </div>
@@ -158,7 +211,6 @@ function App() {
       )}
     </div>
   );
-  
   
 }
 
