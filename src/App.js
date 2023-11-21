@@ -3,9 +3,11 @@ import "./App.css";
 import BookCreateForm from "./Components/BookCreateForm";
 import BookUpdateForm from "./Components/BookUpdateForm";
 import BooksList from "./Components/BooksList";
+import LentBooksList from "./Components/LentBooksList";
 import LoginForm from "./Components/LoginForm";
 import RegisterForm from "./Components/RegisterForm";
 import { Form, FormControl, Button } from "react-bootstrap"; // Importing Bootstrap components
+
 
 function App() {
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
@@ -30,6 +32,23 @@ function App() {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const fetchLentBooks = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/book/lent", {
+        method: "GET",
+      });
+      if (!response.ok) {
+        alert("Lent books response not okay");
+      }
+      const responseData = await response.json();
+      console.log(responseData);
+      setLentBooks(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+    //setLentBooks([]);
   };
 
   const addBook = (book) => {
@@ -86,6 +105,7 @@ function App() {
 
   useEffect(() => {
     fetchData();
+    fetchLentBooks();
   }, []);
 
   return (
@@ -163,9 +183,11 @@ function App() {
               </>
             )}
             {activeTab === 'lentBooks' && (
-              <>
-                {/* Content for Lent Books */}
-              </>
+              <BooksList
+              books={filteredBooks}
+              editBook={editBook}
+              deleteBook={deleteBook}
+            />
             )}
           </div>
         </>
