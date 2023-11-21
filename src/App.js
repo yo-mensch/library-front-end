@@ -15,6 +15,7 @@ function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showRegisterForm, setShowRegisterForm] = useState(false);
   const [activeTab, setActiveTab] = useState('books');
+  const [lentBooks, setLentBooks] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -112,6 +113,14 @@ function App() {
                   Users
                 </button>
               </li>
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'lentBooks' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('lentBooks')}
+                >
+                  Lent Books
+                </button>
+              </li>
             </ul>
           </nav>
           <div className="content">
@@ -151,6 +160,11 @@ function App() {
                   <RegisterForm handleRegister={handleRegister} handleRegisterClose={handleRegisterClose} />
                 )}
                 {/* Other User-related components */}
+              </>
+            )}
+            {activeTab === 'lentBooks' && (
+              <>
+                {/* Content for Lent Books */}
               </>
             )}
           </div>
