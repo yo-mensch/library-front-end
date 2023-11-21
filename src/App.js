@@ -4,7 +4,8 @@ import BookCreateForm from "./Components/BookCreateForm";
 import BookUpdateForm from "./Components/BookUpdateForm";
 import BooksList from "./Components/BooksList";
 import LoginForm from "./Components/LoginForm";
-import { Form, FormControl } from "react-bootstrap"; // Importing Bootstrap components
+import RegisterForm from "./Components/RegisterForm";
+import { Form, FormControl, Button } from "react-bootstrap"; // Importing Bootstrap components
 
 function App() {
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
@@ -12,6 +13,8 @@ function App() {
   const [bookToUpdate, setBookToUpdate] = useState(null);
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [showRegisterForm, setShowRegisterForm] = useState(false);
+  const [activeTab, setActiveTab] = useState('books');
 
   const fetchData = async () => {
     try {
@@ -68,6 +71,18 @@ function App() {
     setIsLoggedIn(true); 
   };
 
+  const handleRegister = () => {
+    setShowRegisterForm(false);
+  };
+
+  const handleRegisterClose = () => {
+    setShowRegisterForm(false);
+  };
+
+  const handleTabChange = (tab) => {
+    setActiveTab(tab);
+  };
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -75,37 +90,76 @@ function App() {
   return (
     <div className="App">
       <h1>Library Management System</h1>
-      {!isLoggedIn ? ( // Conditionally render the login form if not logged in
+      {!isLoggedIn ? (
         <LoginForm handleLogin={handleLogin} />
       ) : (
         <>
-          <Form inline>
-            <FormControl
-              type="text"
-              placeholder="Search by Title or Author"
-              className="mr-sm-2"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </Form>
-          {openUpdateForm ? (
-            <BookUpdateForm
-              book={bookToUpdate}
-              fetchData={fetchData}
-              closeEditForm={closeEditForm}
-            />
-          ) : (
-            <BookCreateForm addBook={addBook} fetchData={fetchData} />
-          )}
-          <BooksList
-            books={filteredBooks}
-            editBook={editBook}
-            deleteBook={deleteBook}
-          />
+          <nav className="navbar">
+            <ul className="nav">
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'books' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('books')}
+                >
+                  Books
+                </button>
+              </li>
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'users' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('users')}
+                >
+                  Users
+                </button>
+              </li>
+            </ul>
+          </nav>
+          <div className="content">
+            {activeTab === 'books' && (
+              <>
+                <Form inline>
+                  <FormControl
+                    type="text"
+                    placeholder="Search by Title or Author"
+                    className="mr-sm-2"
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                  />
+                </Form>
+                {openUpdateForm ? (
+                  <BookUpdateForm
+                    book={bookToUpdate}
+                    fetchData={fetchData}
+                    closeEditForm={closeEditForm}
+                  />
+                ) : (
+                  <BookCreateForm addBook={addBook} fetchData={fetchData} />
+                )}
+                <BooksList
+                  books={filteredBooks}
+                  editBook={editBook}
+                  deleteBook={deleteBook}
+                />
+              </>
+            )}
+            {activeTab === 'users' && (
+              <>
+                <Button variant="secondary" onClick={() => setShowRegisterForm(true)}>
+                  Add new user
+                </Button>
+                {showRegisterForm && (
+                  <RegisterForm handleRegister={handleRegister} handleRegisterClose={handleRegisterClose} />
+                )}
+                {/* Other User-related components */}
+              </>
+            )}
+          </div>
         </>
       )}
     </div>
   );
+  
+  
 }
 
 export default App;
