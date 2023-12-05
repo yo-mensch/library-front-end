@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
+import LendBookForm from "./LendBookForm";
 import "./style/BooksList.css";
 
-function BooksList({ books, editBook, deleteBook }) {
+function BooksList({ books, editBook, deleteBook, updateBook }) {
+  const [showLendForm, setShowLendForm] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+
   const handleDelete = (_id) => {
     fetch(`http://localhost:3004/book/${_id}`, {
       method: "DELETE",
@@ -22,7 +26,17 @@ function BooksList({ books, editBook, deleteBook }) {
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
       });
-  }
+  };
+
+  const handleLendClick = (book) => {
+    setSelectedBook(book);
+    setShowLendForm(true);
+  };
+
+  const handleLendFormClose = () => {
+    setShowLendForm(false);
+  };
+
   return (
     <Grid
       container
@@ -37,9 +51,13 @@ function BooksList({ books, editBook, deleteBook }) {
             <Card.Title>
               {book.name} by {book.author}
             </Card.Title>
-            <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
-            {book.status}
-          </Typography>
+            <Typography
+              sx={{ fontSize: 14 }}
+              color="text.secondary"
+              gutterBottom
+            >
+              {book.status}
+            </Typography>
             <ButtonGroup>
               <Button variant="secondary" onClick={() => editBook(book)}>
                 Edit
@@ -50,13 +68,14 @@ function BooksList({ books, editBook, deleteBook }) {
             </ButtonGroup>
             <Button
               variant="outline-disabled"
-              onClick={() => console.log("cia keisis knygos statusas")}
+              onClick={() => handleLendClick(book)}
             >
               Lend
             </Button>
           </Card>
         </Grid>
       ))}
+      <LendBookForm show={showLendForm} onClose={handleLendFormClose} book={selectedBook} updateBook={updateBook}/>
     </Grid>
   );
 }

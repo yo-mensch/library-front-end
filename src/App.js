@@ -9,6 +9,7 @@ import UserList from "./Components/UserList";
 import UserUpdateForm from "./Components/UserUpdateForm";
 import { Form, FormControl, Button } from "react-bootstrap"; // Importing Bootstrap components
 
+
 function App() {
   const [openUpdateForm, setOpenUpdateForm] = useState(false);
   const [books, setBooks] = useState([]);
@@ -19,6 +20,7 @@ function App() {
   const [activeTab, setActiveTab] = useState('books');
   const [users, setUsers] = useState([]);
   const [userToUpdate, setUserToUpdate] = useState(null);
+  const [lentBooks, setLentBooks] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -33,6 +35,23 @@ function App() {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const fetchLentBooks = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/book/lent", {
+        method: "GET",
+      });
+      if (!response.ok) {
+        alert("Lent books response not okay");
+      }
+      const responseData = await response.json();
+      console.log(responseData);
+      setLentBooks(responseData);
+    } catch (error) {
+      console.error(error);
+    }
+    //setLentBooks([]);
   };
 
   const fetchDataForUsers = async () => {
@@ -126,6 +145,7 @@ function App() {
   useEffect(() => {
     fetchData();
     fetchDataForUsers();
+    fetchLentBooks();
   }, []);
 
   return (
@@ -153,6 +173,14 @@ function App() {
                   Users
                 </button>
               </li>
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'lentBooks' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('lentBooks')}
+                >
+                  Lent Books
+                </button>
+              </li>
             </ul>
           </nav>
           <div className="content">
@@ -172,6 +200,7 @@ function App() {
                     book={bookToUpdate}
                     fetchData={fetchData}
                     closeEditForm={closeEditForm}
+                    updateBook={updateBook}
                   />
                 ) : (
                   <BookCreateForm addBook={addBook} fetchData={fetchData} />
@@ -180,6 +209,7 @@ function App() {
                   books={filteredBooks}
                   editBook={editBook}
                   deleteBook={deleteBook}
+                  updateBook={updateBook}
                 />
               </>
             )}
@@ -205,6 +235,14 @@ function App() {
                   deleteUser={deleteUser} // Pass the deleteUser function to the UserList component
                 />
               </>
+            )}
+            {activeTab === 'lentBooks' && (
+              <BooksList
+              books={filteredBooks}
+              editBook={editBook}
+              deleteBook={deleteBook}
+              updateBook={updateBook}
+            />
             )}
           </div>
         </>
