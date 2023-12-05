@@ -98,7 +98,7 @@ const LendBookForm = ({ show, onClose, book, updateBook }) => {
       <Form onSubmit={handleLend}>
         <Modal.Body>
           <Form.Group>
-            <Form.Label>Client's Nameaaaaa:</Form.Label>
+            <Form.Label>Client's Name:</Form.Label>
             <Form.Control
               required
               type="text"
