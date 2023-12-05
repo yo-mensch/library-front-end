@@ -1,14 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, ButtonGroup, Card } from "react-bootstrap";
 import { Grid } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import LendBookForm from "./LendBookForm";
 import "./style/BooksList.css";
 
-function BooksList({ books, editBook, deleteBook, updateBook }) {
+function LentBooksList({ books, editBook, updateBook }) {
   const [showLendForm, setShowLendForm] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
+  const [lentBooks, setLentBooks] = useState([]);
 
+  useEffect(() => {
+    setLentBooks(books.filter((book) => {
+        return book.status === "Paskolinta";
+    }))
+  }, [lentBooks]);
   const handleDelete = (_id) => {
     fetch(`http://localhost:3004/book/${_id}`, {
       method: "DELETE",
@@ -20,8 +26,6 @@ function BooksList({ books, editBook, deleteBook, updateBook }) {
         if (!response.ok) {
           throw new Error("Network response was not ok");
         }
-        // Remove the deleted book from the local state
-        deleteBook();
       })
       .catch((error) => {
         console.error("There was a problem with the fetch operation:", error);
@@ -45,7 +49,7 @@ function BooksList({ books, editBook, deleteBook, updateBook }) {
       direction="row"
       alignItems="center"
     >
-      {books.map((book) => (
+      {lentBooks.map((book) => (
         <Grid item xs={8} sm={6} md={4} key={book._id}>
           <Card className="list-item">
             <Card.Title>
@@ -66,12 +70,14 @@ function BooksList({ books, editBook, deleteBook, updateBook }) {
                 Delete
               </Button>
             </ButtonGroup>
+            <ButtonGroup>
             <Button
               variant="outline-disabled"
               onClick={() => handleLendClick(book)}
             >
-              Lend
+              Show lending info
             </Button>
+            </ButtonGroup>
           </Card>
         </Grid>
       ))}
@@ -80,4 +86,4 @@ function BooksList({ books, editBook, deleteBook, updateBook }) {
   );
 }
 
-export default BooksList;
+export default LentBooksList;

@@ -1,27 +1,27 @@
 import React, { useState } from 'react';
-import { Form, Button, Container } from "react-bootstrap";
-import "./style/LoginForm.css";
+import { Form, Button, Container } from 'react-bootstrap';
+import './style/RegisterForm.css';
 
-const LoginForm = ({ handleLogin }) => {
+const RegisterForm = ({ handleRegister, handleRegisterClose }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:3004/user/login", {
-        method: "POST",
+      const response = await fetch('http://localhost:3004/user/register', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ username, password }),
       });
 
       if (response.ok) {
-        console.log("Login successful");
-        handleLogin(); // Call the handleLogin function passed from App.js
+        console.log('Registration successful');
+        handleRegister(); // Call the handleRegister function passed from App.js to handle success
       } else {
-        console.error("Login failed");
+        console.error('Registration failed');
       }
     } catch (error) {
       console.error(error);
@@ -31,7 +31,7 @@ const LoginForm = ({ handleLogin }) => {
   return (
     <Container className="form-container">
       <Form onSubmit={handleSubmit}>
-        <h3>Login</h3>
+        <h3>Register</h3>
         <Form.Group>
           <Form.Label>Username:</Form.Label>
           <Form.Control
@@ -51,12 +51,14 @@ const LoginForm = ({ handleLogin }) => {
           />
         </Form.Group>
         <Button variant="primary" type="submit">
-          Login
+          Register
+        </Button>
+        <Button variant="secondary" onClick={handleRegisterClose}>
+          Close
         </Button>
       </Form>
     </Container>
   );
 };
 
-export default LoginForm;
-
+export default RegisterForm;
