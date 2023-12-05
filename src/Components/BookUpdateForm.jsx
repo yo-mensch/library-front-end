@@ -9,7 +9,6 @@ function BookUpdateForm(props) {
   );
   const [ISBN, setISBN] = useState(props.book? props.book.ISBN: "");
   const [status, setStatus] = useState(props.book? props.book.status: "");
-  const statusOptions = ["Laisva", "Paskolinta"];
 
   const handleSubmit = async(e) => {
     e.preventDefault();
@@ -26,7 +25,8 @@ function BookUpdateForm(props) {
           }
         );
         if (response.ok) {
-          window.location.reload(false);
+          console.log(props);
+          props.updateBook();
         } else {
           const errorData = await response.json();
           console.log(errorData); // Log the error data to the console
@@ -34,7 +34,6 @@ function BookUpdateForm(props) {
       } catch (error) {
         console.error(error);
       }
-      props.updateBook();
     }
   };
 
@@ -68,22 +67,6 @@ function BookUpdateForm(props) {
             value={ISBN}
             onChange={(e) => setISBN(e.target.value)}
           />
-        </Form.Group>
-        <Form.Group>
-          <Form.Label>Status:</Form.Label>
-          <Form.Control
-            as="select"
-            required
-            value={status}
-            onChange={(e) => setStatus(e.target.value)}
-          >
-            <option value="" disabled>Select Status</option>
-            {statusOptions.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </Form.Control>
         </Form.Group>
         <Button type="submit">Update Book</Button>
         <Button variant="light" onClick={props.closeEditForm}>

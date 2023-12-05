@@ -201,6 +201,7 @@ function App() {
                     book={bookToUpdate}
                     fetchData={fetchData}
                     closeEditForm={closeEditForm}
+                    updateBook={updateBook}
                   />
                 ) : (
                   <BookCreateForm addBook={addBook} fetchData={fetchData} />
