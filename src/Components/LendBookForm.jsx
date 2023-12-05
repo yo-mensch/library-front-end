@@ -1,106 +1,110 @@
-// LendBookForm.jsx
-import React, { useState } from 'react';
-import { Form, Button, Modal, Alert } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Form, Button, Modal } from "react-bootstrap";
 
-const LendBookForm = ({ onLend, onClose, book }) => {
-  const [clientName, setClientName] = useState('');
-  const [clientSurname, setClientSurname] = useState('');
-  const [clientPhoneNumber, setClientPhoneNumber] = useState('');
-  const [validationErrors, setValidationErrors] = useState({
-    clientName: '',
-    clientSurname: '',
-    clientPhoneNumber: '',
-  });
+const LendBookForm = ({ show, onClose, book }) => {
+  const [clientName, setClientName] = useState("");
+  const [clientSurname, setClientSurname] = useState("");
+  const [clientPhoneNumber, setClientPhoneNumber] = useState("");
+  const [dealineDate, setDeadlineDate] = useState("");
 
-  const handleLend = () => {
-    // Validate input fields
-    console.log(clientName);
-    const errors = {};
-    if (!clientName) {
-      errors.clientName = 'Client\'s Name is required.';
+  const updateBook = async(e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(
+        `http://localhost:3004/book/${book._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ 
+            name: book.name,
+            author: book.author,
+            ISBN: book.ISBN,
+            status: "Paskolinta" 
+          }),
+        }
+      );
+      if (response.ok) {
+        window.location.reload(false);
+      } else {
+        const errorData = await response.json();
+        console.log(errorData); // Log the error data to the console
+      }
+    } catch (error) {
+      console.log(error);
     }
-    if (!clientSurname) {
-      errors.clientSurname = 'Client\'s Surname is required.';
-    }
-    if (!clientPhoneNumber) {
-      errors.clientPhoneNumber = 'Client\'s Phone Number is required.';
-    }
-    // If there are validation errors, update the state and return
-    //  if (Object.values(errors).some(error => error !== '')) {
-    //    setValidationErrors(errors);
-    //   return;
-    // }
+  }
 
-    // Call the onLend function with the client information
-    onLend({
-      clientName,
-      clientSurname,
-      clientPhoneNumber,
-    });
+  const createLending = async(e) => {
+    
+  }
 
-    // Reset the form fields and error messages
-    setClientName('');
-    setClientSurname('');
-    setClientPhoneNumber('');
-    setValidationErrors({});
+  const handleLend = async(e) => {
+    e.preventDefault();
+    const currentDate = new Date();
+    const oneMonthLater = new Date(currentDate);
+    oneMonthLater.setMonth(currentDate.getMonth() + 1);
+    setDeadlineDate(oneMonthLater);
+    updateBook();
 
     // Close the modal
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setClientName("");
+    setClientSurname("");
+    setClientPhoneNumber("");
+
     onClose();
   };
 
-  const handleInputChange = (e, setter) => {
-    setter(e.target.value);
-    // Clear validation error when any input field changes
-    setValidationErrors({});
-  };
-
   return (
-    <Modal show={true} onHide={onClose}>
+    <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Lend Book</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        <Form>
-          <Form.Group controlId="clientName">
-            <Form.Label>Client's Name:</Form.Label>
+
+      <Form onSubmit={handleLend}>
+        <Modal.Body>
+          <Form.Group>
+            <Form.Label>Client's Nameaaaaa:</Form.Label>
             <Form.Control
+              required
               type="text"
               value={clientName}
-              onChange={(e) => handleInputChange(e, setClientName)}
+              onChange={(e) => setClientName(e.target.value)}
             />
-            {/* Display validation error message for clientName */}
-            {validationErrors.clientName && <Alert variant="danger">{validationErrors.clientName}</Alert>}
           </Form.Group>
-          <Form.Group controlId="clientSurname">
+          <Form.Group>
             <Form.Label>Client's Surname:</Form.Label>
             <Form.Control
+              required
               type="text"
               value={clientSurname}
-              onChange={(e) => handleInputChange(e, setClientSurname)}
+              onChange={(e) => setClientSurname(e.target.value)}
             />
-            {/* Display validation error message for clientSurname */}
-            {validationErrors.clientSurname && <Alert variant="danger">{validationErrors.clientSurname}</Alert>}
           </Form.Group>
-          <Form.Group controlId="clientPhoneNumber">
+          <Form.Group>
             <Form.Label>Client's Phone Number:</Form.Label>
             <Form.Control
+              required
               type="text"
               value={clientPhoneNumber}
-              onChange={(e) => handleInputChange(e, setClientPhoneNumber)}
+              onChange={(e) => setClientPhoneNumber(e.target.value)}
             />
-            {/* Display validation error message for clientPhoneNumber */}
-            {validationErrors.clientPhoneNumber && <Alert variant="danger">{validationErrors.clientPhoneNumber}</Alert>}
           </Form.Group>
-        </Form>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={onClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleLend}>
-          Lend
-        </Button>
-      </Modal.Footer>
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleClose}>
+            Close
+          </Button>
+          <Button variant="primary" type="submit">
+            Lend
+          </Button>
+        </Modal.Footer>
+      </Form>
     </Modal>
   );
 };
