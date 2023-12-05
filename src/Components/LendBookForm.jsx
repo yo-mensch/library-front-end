@@ -1,32 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Modal } from "react-bootstrap";
 
-const LendBookForm = ({ show, onClose, book }) => {
+const LendBookForm = ({ show, onClose, book, updateBook }) => {
   const [clientName, setClientName] = useState("");
   const [clientSurname, setClientSurname] = useState("");
   const [clientPhoneNumber, setClientPhoneNumber] = useState("");
   const [dealineDate, setDeadlineDate] = useState("");
 
-  const updateBook = async(e) => {
-    e.preventDefault();
+  useEffect(() => {
+    if (dealineDate) {
+      // This block will execute when dealineDate changes
+      updateBookReq();
+      createLending();
+      // Close the modal
+      handleClose();
+    }
+  }, [dealineDate]);
+  const updateBookReq = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3004/book/${book._id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ 
-            name: book.name,
-            author: book.author,
-            ISBN: book.ISBN,
-            status: "Paskolinta" 
-          }),
-        }
-      );
+      const response = await fetch(`http://localhost:3004/book/${book._id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: book.name,
+          author: book.author,
+          ISBN: book.ISBN,
+          status: "Paskolinta",
+        }),
+      });
       if (response.ok) {
-        window.location.reload(false);
+        console.log("response is okey");
+        updateBook();
       } else {
         const errorData = await response.json();
         console.log(errorData); // Log the error data to the console
@@ -34,22 +40,45 @@ const LendBookForm = ({ show, onClose, book }) => {
     } catch (error) {
       console.log(error);
     }
-  }
+  };
 
-  const createLending = async(e) => {
-    
-  }
+  const createLending = async () => {
+    try {
+      const response = await fetch(
+        `http://localhost:3004/book/lend/${book._id}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            book_id: book._id,
+            status: "Paskolinta",
+            clientName: clientName,
+            clientSurname: clientSurname,
+            clientPhoneNumber: clientPhoneNumber,
+            deadline: dealineDate,
+            dateWhenReturned: ""
+          }),
+        }
+      );
+      if (response.ok) {
+        console.log("response is okey");
+      } else {
+        const errorData = await response.json();
+        console.log(errorData); // Log the error data to the console
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
-  const handleLend = async(e) => {
+  const handleLend = (e) => {
     e.preventDefault();
     const currentDate = new Date();
     const oneMonthLater = new Date(currentDate);
     oneMonthLater.setMonth(currentDate.getMonth() + 1);
-    setDeadlineDate(oneMonthLater);
-    updateBook();
-
-    // Close the modal
-    handleClose();
+    setDeadlineDate(oneMonthLater.toISOString()); // Ensure it's in the correct format
   };
 
   const handleClose = () => {

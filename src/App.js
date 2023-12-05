@@ -210,6 +210,7 @@ function App() {
                   books={filteredBooks}
                   editBook={editBook}
                   deleteBook={deleteBook}
+                  updateBook={updateBook}
                 />
               </>
             )}
@@ -237,10 +238,11 @@ function App() {
               </>
             )}
             {activeTab === 'lentBooks' && (
-              <BooksList
+              <LentBooksList
               books={filteredBooks}
               editBook={editBook}
               deleteBook={deleteBook}
+              updateBook={updateBook}
             />
             )}
           </div>

@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import LendBookForm from "./LendBookForm";
 import "./style/BooksList.css";
 
-function BooksList({ books, editBook, deleteBook }) {
+function BooksList({ books, editBook, deleteBook, updateBook }) {
   const [showLendForm, setShowLendForm] = useState(false);
   const [selectedBook, setSelectedBook] = useState(null);
 
@@ -75,7 +75,7 @@ function BooksList({ books, editBook, deleteBook }) {
           </Card>
         </Grid>
       ))}
-      <LendBookForm show={showLendForm} onClose={handleLendFormClose} book={selectedBook}/>
+      <LendBookForm show={showLendForm} onClose={handleLendFormClose} book={selectedBook} updateBook={updateBook}/>
     </Grid>
   );
 }
