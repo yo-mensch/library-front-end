@@ -3,7 +3,6 @@ import "./App.css";
 import BookCreateForm from "./Components/BookCreateForm";
 import BookUpdateForm from "./Components/BookUpdateForm";
 import BooksList from "./Components/BooksList";
-import LentBooksList from "./Components/LentBooksList";
 import LoginForm from "./Components/LoginForm";
 import RegisterForm from "./Components/RegisterForm";
 import UserList from "./Components/UserList";
@@ -238,7 +237,7 @@ function App() {
               </>
             )}
             {activeTab === 'lentBooks' && (
-              <LentBooksList
+              <BooksList
               books={filteredBooks}
               editBook={editBook}
               deleteBook={deleteBook}
