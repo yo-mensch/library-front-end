@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Modal, Card } from "react-bootstrap";
+import {
+  Form,
+  Button,
+  Modal,
+  FormGroup,
+  ModalDialog,
+} from "react-bootstrap";
 
 const LendingInfoModal = ({ show, onClose, book, updateBook }) => {
   const [lending, setLending] = useState(null);
   const [formReturnDate, setFormReturnDate] = useState("");
   const [dateWhenReturned, setDateWhenReturned] = useState("");
+  const [openDatePicker, setOpenDatePicker] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [minimumDate, setMinimumDate] = useState(null);
 
   useEffect(() => {
     if (dateWhenReturned) {
@@ -72,7 +80,7 @@ const LendingInfoModal = ({ show, onClose, book, updateBook }) => {
   const updateLending = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3004/book/lend/${book._id}`,
+        `http://localhost:3004/book/lend/${lending._id}`,
         {
           method: "PUT",
           headers: {
@@ -85,7 +93,7 @@ const LendingInfoModal = ({ show, onClose, book, updateBook }) => {
             clientSurname: lending.clientSurname,
             clientPhoneNumber: lending.clientPhoneNumber,
             deadline: lending.dealineDate,
-            dateWhenReturned: "",
+            dateWhenReturned: new Date(formReturnDate).toISOString(),
           }),
         }
       );
@@ -102,48 +110,100 @@ const LendingInfoModal = ({ show, onClose, book, updateBook }) => {
 
   const handleSubmitBookReturn = (e) => {
     e.preventDefault();
-    setDateWhenReturned(formReturnDate.toISOString()); // Ensure it's in the correct format
+    updateBookReq();
+    updateLending();
+    handleClose();
   };
 
-  const handleCheckLending = (e) => {
+  const handleMarkAsReturned = (e) => {
     e.preventDefault();
-    console.log(lending);
+    setMinimumDate(formatDate());
+    setOpenDatePicker(true);
   };
 
   const handleClose = () => {
     setDateWhenReturned("");
     setFormReturnDate("");
+    setOpenDatePicker(false);
     onClose();
   };
+
+  const formatDate = () => {
+    const currentDeadline = new Date(lending.deadline);
+    const oneMonthEarlier = new Date(currentDeadline);
+    const deadlineMonth = currentDeadline.getMonth();
+    oneMonthEarlier.setMonth(deadlineMonth - 1);
+    return oneMonthEarlier.toISOString().split("T")[0];
+  };
+
+  const handleCloseForm = () => {
+    setOpenDatePicker(false);
+    setFormReturnDate("");
+  }
 
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
         <Modal.Title>Lending info</Modal.Title>
       </Modal.Header>
-      <Modal.Body>
-        {loading ? (
-          <p>Loading...</p>
-        ) : (
-          <div>
+
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <div>
+          <Modal.Body>
             <p>Book: {book.name}</p>
             <p>Author: {book.author}</p>
             <p>ISBN: {book.ISBN}</p>
             <p>Status: {lending.lendingStatus}</p>
             <p>Client: {lending.clientName + " " + lending.clientSurname}</p>
             <p>Client phone number: {lending.clientPhoneNumber}</p>
-            <p>Deadline: {lending.deadline}</p>
-          </div>
-        )}
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="secondary" onClick={handleClose}>
-          Close
-        </Button>
-        <Button variant="primary" onClick={handleCheckLending}>
-          Mark as returned
-        </Button>
-      </Modal.Footer>
+            <p>Deadline to return: {lending.deadline}</p>
+            {lending.dateWhenReturned === "" ? (
+              <p>Book not yet returned</p>
+            ) : (
+              <p>{lending.dateWhenReturned}</p>
+            )}
+            <Button variant="secondary" onClick={handleClose}>
+              Close
+            </Button>
+            {lending.dateWhenReturned === "" ? (
+              <Button variant="primary" onClick={handleMarkAsReturned}>
+                Mark as returned
+              </Button>
+            ) : (
+              <></>
+            )}
+          
+            <ModalDialog>
+            {openDatePicker === true ? (
+              <Form onSubmit={handleSubmitBookReturn}>
+                <FormGroup>
+                  <label>Select return date</label>
+                  <input
+                    required
+                    type="date"
+                    label="Controlled picker"
+                    min={minimumDate}
+                    max={new Date().toISOString().split("T")[0]}
+                    value={formReturnDate}
+                    onChange={(e) => setFormReturnDate(e.target.value)}
+                  />
+                </FormGroup>
+                <Button variant="secondary" onClick={handleCloseForm}>
+                  Close
+                </Button>
+                <Button type="submit" variant="primary">
+                  Submit
+                </Button>
+              </Form>
+            ) : (
+              <></>
+            )}
+            </ModalDialog>
+            </Modal.Body>
+        </div>
+      )}
     </Modal>
   );
 };

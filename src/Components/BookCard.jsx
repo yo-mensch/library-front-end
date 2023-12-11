@@ -50,9 +50,12 @@ function BookCard({ book, editBook, deleteBook, updateBook }) {
     <>
       <Grid item xs={8} sm={6} md={4}>
         <Card className="list-item">
-          <Card.Title>
-            {book.name} by {book.author}
-          </Card.Title>
+          <h3>
+            {book.name}
+          </h3>
+          <h5>
+            {book.author}
+          </h5>
           <Typography sx={{ fontSize: 14 }} color="text.secondary" gutterBottom>
             {book.status}
           </Typography>
