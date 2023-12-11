@@ -53,7 +53,7 @@ const LendBookForm = ({ show, onClose, book, updateBook }) => {
           },
           body: JSON.stringify({
             book_id: book._id,
-            status: "Paskolinta",
+            lendingStatus: "Paskolinta",
             clientName: clientName,
             clientSurname: clientSurname,
             clientPhoneNumber: clientPhoneNumber,
