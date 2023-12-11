@@ -4,8 +4,6 @@ import "./style/BooksList.css";
 import BookCard from "./BookCard";
 
 function BooksList({ books, editBook, deleteBook, updateBook }) {
-  
-
   return (
     <Grid
       container
@@ -15,9 +13,15 @@ function BooksList({ books, editBook, deleteBook, updateBook }) {
       alignItems="center"
     >
       {books.map((book) => (
-        <BookCard book={book} editBook={editBook} deleteBook={deleteBook} updateBook={updateBook}/>
+        <BookCard
+          key={book._id}
+          book={book}
+          editBook={editBook}
+          deleteBook={deleteBook}
+          updateBook={updateBook}
+        />
       ))}
-      </Grid>
+    </Grid>
   );
 }
 
