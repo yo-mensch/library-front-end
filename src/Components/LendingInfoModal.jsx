@@ -1,20 +1,47 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Modal } from "react-bootstrap";
+import { Form, Button, Modal, Card } from "react-bootstrap";
 
-const LendingInfoModal = ( {show, onClose, book, updateBook, lending} ) => {
+const LendingInfoModal = ({ show, onClose, book, updateBook }) => {
+  const [lending, setLending] = useState(null);
   const [formReturnDate, setFormReturnDate] = useState("");
   const [dateWhenReturned, setDateWhenReturned] = useState("");
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (dateWhenReturned) {
-      // This block will execute when dealineDate changes
       updateBookReq();
       updateLending();
-      // Close the modal
       handleClose();
     }
   }, [dateWhenReturned]);
 
+  useEffect(() => {
+    const fetchLending = async () => {
+      try {
+        const response = await fetch(`http://localhost:3004/book/lent`, {
+          method: "GET",
+        });
+        if (!response.ok) {
+          console.log(response);
+          alert("response not okay");
+        }
+        const responseData = await response.json();
+        const foundLending = responseData.find(
+          (item) =>
+            item.book_id === book._id && item.lendingStatus === "Paskolinta"
+        );
+        setLending(foundLending || {}); // Ensure it's an object, even if not found
+        setLoading(false); // Set loading to false when lending data is available
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (show) {
+      setLoading(true); // Set loading to true when opening the modal
+      fetchLending();
+    }
+  }, [show]);
 
   const updateBookReq = async () => {
     try {
@@ -78,6 +105,11 @@ const LendingInfoModal = ( {show, onClose, book, updateBook, lending} ) => {
     setDateWhenReturned(formReturnDate.toISOString()); // Ensure it's in the correct format
   };
 
+  const handleCheckLending = (e) => {
+    e.preventDefault();
+    console.log(lending);
+  };
+
   const handleClose = () => {
     setDateWhenReturned("");
     setFormReturnDate("");
@@ -90,51 +122,28 @@ const LendingInfoModal = ( {show, onClose, book, updateBook, lending} ) => {
         <Modal.Title>Lending info</Modal.Title>
       </Modal.Header>
       <Modal.Body>
+        {loading ? (
+          <p>Loading...</p>
+        ) : (
+          <div>
+            <p>Book: {book.name}</p>
+            <p>Author: {book.author}</p>
+            <p>ISBN: {book.ISBN}</p>
+            <p>Status: {lending.lendingStatus}</p>
+            <p>Client: {lending.clientName + " " + lending.clientSurname}</p>
+            <p>Client phone number: {lending.clientPhoneNumber}</p>
+            <p>Deadline: {lending.deadline}</p>
+          </div>
+        )}
       </Modal.Body>
       <Modal.Footer>
-      <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
+        <Button variant="secondary" onClick={handleClose}>
+          Close
+        </Button>
+        <Button variant="primary" onClick={handleCheckLending}>
+          Mark as returned
+        </Button>
       </Modal.Footer>
-      {/* <Form onSubmit={handleLend}> */}
-      {/* <Modal.Body>
-          <Form.Group>
-            <Form.Label>Client's Name:</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              value={clientName}
-              onChange={(e) => setClientName(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Client's Surname:</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              value={clientSurname}
-              onChange={(e) => setClientSurname(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group>
-            <Form.Label>Client's Phone Number:</Form.Label>
-            <Form.Control
-              required
-              type="text"
-              value={clientPhoneNumber}
-              onChange={(e) => setClientPhoneNumber(e.target.value)}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleClose}>
-            Close
-          </Button>
-          <Button variant="primary" type="submit">
-            
-          </Button>
-        </Modal.Footer> */}
-      {/* </Form> */}
     </Modal>
   );
 };

@@ -7,7 +7,6 @@ import "./style/BooksList.css";
 import LendingInfoModal from "./LendingInfoModal";
 
 function BookCard({ book, editBook, deleteBook, updateBook }) {
-  const [lending, setLending] = useState({});
   const [showLendForm, setShowLendForm] = useState(false);
   const [showLendInfoModal, setShowLendInfoModal] = useState(false);
   const [selectedBook, setSelectedBook] = useState(book);
@@ -31,30 +30,6 @@ function BookCard({ book, editBook, deleteBook, updateBook }) {
       });
   };
 
-  const fetchLending = async () => {
-    try {
-      const response = await fetch(`http://localhost:3004/book/lent`, {
-        method: "GET",
-      });
-      if (!response.ok) {
-        console.log(response);
-        alert("response not okay");
-      }
-      const responseData = await response.json();
-      const foundLending = responseData.filter(
-        (item) =>
-          item.book_id === book._id && item.lendingStatus === "Paskolinta"
-      );
-      setLending(foundLending);
-      console.log(responseData);
-      console.log(lending);
-      console.log(foundLending);
-      console.log(book);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   const handleLendClick = () => {
     setShowLendForm(true);
   };
@@ -63,10 +38,9 @@ function BookCard({ book, editBook, deleteBook, updateBook }) {
     setShowLendForm(false);
   };
 
-  const handleOpenLendingInfo = async () => {
-    await fetchLending();
+  const handleLendInfoModal = () => {
     setShowLendInfoModal(true);
-  };
+  }
 
   const handleLendingInfoClose = () => {
     setShowLendInfoModal(false);
@@ -98,10 +72,7 @@ function BookCard({ book, editBook, deleteBook, updateBook }) {
               Lend
             </Button>
           ) : (
-            <Button
-              variant="outline-disabled"
-              onClick={() => handleOpenLendingInfo(book)}
-            >
+            <Button variant="outline-disabled" onClick={handleLendInfoModal}>
               Lending info
             </Button>
           )}
@@ -118,7 +89,6 @@ function BookCard({ book, editBook, deleteBook, updateBook }) {
         onClose={handleLendingInfoClose}
         book={selectedBook}
         updateBook={updateBook}
-        lending={lending}
       />
     </>
   );
