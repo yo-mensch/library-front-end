@@ -7,6 +7,7 @@ import LoginForm from "./Components/LoginForm";
 import RegisterForm from "./Components/RegisterForm";
 import UserList from "./Components/UserList";
 import UserUpdateForm from "./Components/UserUpdateForm";
+import LateCustomersList from "./Components/LateCustomersList";
 import { Form, FormControl, Button } from "react-bootstrap"; // Importing Bootstrap components
 
 
@@ -21,6 +22,7 @@ function App() {
   const [users, setUsers] = useState([]);
   const [userToUpdate, setUserToUpdate] = useState(null);
   const [lentBooks, setLentBooks] = useState([]);
+  const [lateLendings, setLateLendings] = useState([]);
 
   const fetchData = async () => {
     try {
@@ -52,6 +54,21 @@ function App() {
       console.error(error);
     }
     //setLentBooks([]);
+  };
+
+
+  const fetchLateLendings = async () => {
+    try {
+      const response = await fetch("http://localhost:3004/book/late");
+      if (!response.ok) {
+        throw new Error('Failed to fetch late lendings');
+      }
+      const data = await response.json();
+      setLateLendings(data);
+    } catch (error) {
+      console.error(error);
+      // handle error feedback to user here
+    }
   };
 
   const fetchDataForUsers = async () => {
@@ -146,6 +163,7 @@ function App() {
     fetchData();
     fetchDataForUsers();
     fetchLentBooks();
+    fetchLateLendings();
   }, []);
 
   return (
@@ -179,6 +197,14 @@ function App() {
                   onClick={() => handleTabChange('lentBooks')}
                 >
                   Lent Books
+                </button>
+              </li>
+              <li className="nav-item">
+                <button
+                  className={`nav-link ${activeTab === 'lateCustomers' ? 'active' : ''}`}
+                  onClick={() => handleTabChange('lateCustomers')}
+                >
+                  Late Customers
                 </button>
               </li>
             </ul>
@@ -230,25 +256,29 @@ function App() {
                   />
                 )}
                 <UserList
-                  users={users} // Pass the users array to the UserList component
-                  editUser={editUser} // Pass the editUser function to the UserList component
-                  deleteUser={deleteUser} // Pass the deleteUser function to the UserList component
+                  users={users}
+                  editUser={editUser}
+                  deleteUser={deleteUser}
                 />
               </>
             )}
             {activeTab === 'lentBooks' && (
               <BooksList
-              books={filteredBooks}
-              editBook={editBook}
-              deleteBook={deleteBook}
-              updateBook={updateBook}
-            />
+                books={filteredBooks}
+                editBook={editBook}
+                deleteBook={deleteBook}
+                updateBook={updateBook}
+              />
+            )}
+            {activeTab === 'lateCustomers' && (
+              <LateCustomersList lateLendings={lateLendings} />
             )}
           </div>
         </>
       )}
     </div>
   );
+  
   
 }
 

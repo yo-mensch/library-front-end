@@ -35,7 +35,7 @@ const LendBookForm = ({ show, onClose, book, updateBook }) => {
         updateBook();
       } else {
         const errorData = await response.json();
-        console.log(errorData); // Log the error data to the console
+        console.log(errorData); 
       }
     } catch (error) {
       console.log(error);
@@ -66,7 +66,7 @@ const LendBookForm = ({ show, onClose, book, updateBook }) => {
         console.log("response is okey");
       } else {
         const errorData = await response.json();
-        console.log(errorData); // Log the error data to the console
+        console.log(errorData); 
       }
     } catch (error) {
       console.log(error);
@@ -78,7 +78,10 @@ const LendBookForm = ({ show, onClose, book, updateBook }) => {
     const currentDate = new Date();
     const oneMonthLater = new Date(currentDate);
     oneMonthLater.setMonth(currentDate.getMonth() + 1);
-    setDeadlineDate(oneMonthLater.toISOString()); // Ensure it's in the correct format
+    //setDeadlineDate(oneMonthLater.toISOString()); 
+    //For testing use: 
+    currentDate.setDate(currentDate.getDate() - 1); // Subtract one day from the current date
+    setDeadlineDate(currentDate.toLocaleDateString());
   };
 
   const handleClose = () => {
