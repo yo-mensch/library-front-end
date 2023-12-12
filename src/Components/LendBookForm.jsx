@@ -78,10 +78,10 @@ const LendBookForm = ({ show, onClose, book, updateBook }) => {
     const currentDate = new Date();
     const oneMonthLater = new Date(currentDate);
     oneMonthLater.setMonth(currentDate.getMonth() + 1);
-    //setDeadlineDate(oneMonthLater.toISOString()); 
+    setDeadlineDate(oneMonthLater.toISOString()); 
     //For testing use: 
-    currentDate.setDate(currentDate.getDate() - 1); // Subtract one day from the current date
-    setDeadlineDate(currentDate.toLocaleDateString());
+    //currentDate.setDate(currentDate.getDate() - 1); // Subtract one day from the current date
+    //setDeadlineDate(currentDate.toLocaleDateString());
   };
 
   const handleClose = () => {
