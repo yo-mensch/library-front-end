@@ -101,6 +101,8 @@ function App() {
       book.author.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const filteredLentBooks = books.filter(book => book.status === 'Paskolinta');
+
   const updateBook = () => {
     fetchData();
     setBookToUpdate(null); // Reset the book to update
@@ -264,7 +266,7 @@ function App() {
             )}
             {activeTab === 'lentBooks' && (
               <BooksList
-                books={filteredBooks}
+                books={filteredLentBooks}
                 editBook={editBook}
                 deleteBook={deleteBook}
                 updateBook={updateBook}
